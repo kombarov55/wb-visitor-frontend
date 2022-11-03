@@ -11,7 +11,7 @@ export default ({}) => {
 
     return <>
         <ElevatedVertical>
-            <Label text={"Активные задания"}/>
+            <Label text={"Активные задания"} size={"medium"}/>
             <br/>
             <ElevatedVertical margin={"0"} width={"98%"}>
                 {/*<Label text={"Отсутствуют..."} fontStyle={"italic"}/>*/}

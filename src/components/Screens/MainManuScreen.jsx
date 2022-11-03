@@ -6,7 +6,7 @@ import Vertical from "../UI/Layout/Vertical";
 import TaskGroupComponent from "./TaskGroup/TaskGroupComponent";
 
 export default ({}) => {
-    return <Page title={"Главное меню"}>
+    return <Page title={"Администрирование"}>
         <Vertical>
             <TaskGroupComponent/>
             <ElevatedVertical>

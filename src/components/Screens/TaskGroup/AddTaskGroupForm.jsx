@@ -1,13 +1,13 @@
 import React from "react"
 import ElevatedVertical from "../../UI/Layout/ElevatedVertical";
-import {Field, Form, Formik} from "formik";
+import {Form, Formik} from "formik";
 import Label from "../../UI/UIComponents/Label";
 import TextInput from "../../UI/Form/TextInput";
 import Textarea from "../../UI/Form/TextArea";
 import SubmitButton from "../../UI/Form/SubmitButton";
 import Horizontal from "../../UI/Layout/Horizontal";
 import {Bars} from "react-loader-spinner"
-import Vertical from "../../UI/Layout/Vertical";
+import RadioInput from "../../UI/Form/RadioInput";
 
 export default ({afterSubmit}) => {
     const types = [
@@ -20,11 +20,29 @@ export default ({afterSubmit}) => {
         "Комментарий с сравнением"
     ]
 
+    const targets = [
+        "Артикулу",
+        "Бренду",
+        "Магазину"
+    ]
+
+    function targetValuesInput(target) {
+        switch (target) {
+            case targets[0]:
+                return <Textarea label={"Артикулы: "} name={"targetValue"}/>
+            case targets[1]:
+                return <TextInput label={"Название бренда:"} name={"targetValue"} width={"50%"}/>
+            case targets[2]:
+                return <TextInput label={"id магазина"} name={"targetValue"} width={"50%"}/>
+        }
+    }
+
     return <>
         <Formik
             initialValues={{
                 type: types[0],
-                articles: "",
+                target: targets[0],
+                targetValue: "",
                 amount: 10,
                 days: 0,
                 hours: 0,
@@ -40,12 +58,12 @@ export default ({afterSubmit}) => {
             validate={values => {
                 const errors = {}
 
-                if (!values.articles) {
-                    errors["articles"] = "Обязательное поле"
+                if (!values.targetValue) {
+                    errors["targetValue"] = "Обязательное поле"
                 }
 
                 if (!values.amount) {
-                    errors["articles"] = "Обязательное поле"
+                    errors["targetValue"] = "Обязательное поле"
                 }
 
                 if (values.days < 0) {
@@ -69,25 +87,19 @@ export default ({afterSubmit}) => {
             {({values, isSubmitting}) => (
                 <Form>
                     <ElevatedVertical width={"98%"} margin={"0"}>
-                        <Label size={"medium"} text={"Добавление новой группы"} fontWeight={"bold"}/>
+                        <Label size={"medium"} text={"Добавить задания"} fontWeight={"bold"}/>
                         <br/>
 
-                        <Label text={"Тип группы: "}/>
-                        <div role="group" aria-labelledby="my-radio-group">
-                            <Vertical width={"98%"} margin={"0"} alignItems={"flex-start"}>
-                                {
-                                    types.map(v => <>
-                                        <label style={{"font-size": "1vmax"}}>
-                                            <Field type="radio" name="type" value={v}/>
-                                            {v}
-                                        </label>
-                                    </>)
-                                }
-                            </Vertical>
-                        </div>
+                        <Label text={"Задание: "}/>
+                        <RadioInput xs={types} name={"type"}/>
                         <br/>
 
-                        <Textarea label={"Артикулы: "} name={"articles"}/>
+                        <Label text={"Выбирать товары по: "}/>
+                        <RadioInput xs={targets} name={"target"}/>
+                        <br/>
+
+                        {targetValuesInput(values["target"])}
+
                         <TextInput label={"Количество: "} name={"amount"} width={"10vmax"}/>
                         <Label text={"Интервал между лайками для каждого артикула:"}/>
                         <Horizontal width={"80%"} justifyContent={"flex-start"}>
@@ -98,7 +110,7 @@ export default ({afterSubmit}) => {
                         </Horizontal>
                         {
                             !isSubmitting ?
-                                <SubmitButton isSubmitting={isSubmitting} text={"Сохранить"}/> :
+                                <SubmitButton isSubmitting={isSubmitting} text={"Запуск"}/> :
                                 <Bars
                                     height="30"
                                     width="30"

@@ -6,6 +6,6 @@ export default ({currentValue, maxValue}) => {
                         width={"40vmin"}
                         height={"1vmax"}
                         labelSize={"0.9vmax"}
-                        isLabelVisible={false}
+                        isLabelVisible={true}
     />
 }
