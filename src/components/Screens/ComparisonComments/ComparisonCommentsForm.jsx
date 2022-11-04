@@ -3,6 +3,8 @@ import {Form, Formik} from "formik";
 import TextArea from "../../UI/Form/TextArea";
 import SubmitButton from "../../UI/Form/SubmitButton";
 import {Bars} from "react-loader-spinner";
+import axios from "axios";
+import Links from "../../../Util/Links";
 
 export default ({afterSubmit}) => {
     return <>
@@ -11,8 +13,10 @@ export default ({afterSubmit}) => {
                 text: ""
             }}
             onSubmit={(values, {setSubmitting}) => {
-                setSubmitting(false)
-                afterSubmit()
+                axios.post(Links.comparisonComments, values).then(() => {
+                    setSubmitting(false)
+                    afterSubmit()
+                })
             }}
         >
             {({values, isSubmitting}) => (

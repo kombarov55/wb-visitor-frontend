@@ -1,13 +1,21 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Label from "../../UI/UIComponents/Label";
 import ElevatedVertical from "../../UI/Layout/ElevatedVertical";
 import Button from "../../UI/UIComponents/Button";
 import ComparisonCommentsForm from "./ComparisonCommentsForm";
+import axios from "axios";
+import Links from "../../../Util/Links";
 
 export default ({}) => {
 
     const [comments, setComments] = useState(["Чем ваш товар отличается от {}?", "Чем убедите купить ваш товар, а не {}?"])
     const [isAddingComments, setIsAddingComments] = useState(false)
+
+    useEffect(() => loadComments(), [])
+
+    function loadComments() {
+        axios.get(Links.comparisonComments).then(rs => {setComments(rs.data)})
+    }
 
     return <>
         <ElevatedVertical>
@@ -26,8 +34,11 @@ export default ({}) => {
             </ElevatedVertical>
             {
                 !isAddingComments ?
-                    <Button text={"Добавить"} onClick={() => setIsAddingComments(true)}/> :
-                    <ComparisonCommentsForm afterSubmit={() => setIsAddingComments(false)}/>
+                    <Button text={"Заменить"} onClick={() => setIsAddingComments(true)}/> :
+                    <ComparisonCommentsForm afterSubmit={() => {
+                        setIsAddingComments(false)
+                        loadComments()
+                    }}/>
             }
 
             <br/>
