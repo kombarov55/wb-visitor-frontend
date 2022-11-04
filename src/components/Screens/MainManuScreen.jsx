@@ -1,26 +1,18 @@
 import React from "react";
 import Page from "../UI/Page/Page";
-import ElevatedVertical from "../UI/Layout/ElevatedVertical";
-import Label from "../UI/UIComponents/Label";
 import Vertical from "../UI/Layout/Vertical";
 import TaskGroupComponent from "./TaskGroup/TaskGroupComponent";
+import CommentsComponent from "./Comments/CommentsComponent";
+import ComparisonCommentsComponent from "./ComparisonComments/ComparisonCommentsComponent";
+import PhonesStatusComponent from "./PhonesStatus/PhonesStatusComponent";
 
 export default ({}) => {
     return <Page title={"Администрирование"}>
         <Vertical>
             <TaskGroupComponent/>
-            <ElevatedVertical>
-                <Label text={"Комментарии"}/>
-                <br/>
-            </ElevatedVertical>
-            <ElevatedVertical>
-                <Label text={"Комментарии со сравнением между артикулами"} />
-                <br/>
-            </ElevatedVertical>
-            <ElevatedVertical>
-                <Label text={"Статус номеров"}/>
-                <br/>
-            </ElevatedVertical>
+            <CommentsComponent/>
+            <ComparisonCommentsComponent/>
+            <PhonesStatusComponent/>
         </Vertical>
     </Page>
 }

@@ -5,6 +5,7 @@ export default function ({
                              justifyContent = "space-around",
                              alignItems = "",
                              width = "100%",
+                             height,
                              padding = "",
                              gap = "1vmax"
                          }) {
@@ -16,7 +17,8 @@ export default function ({
             justifyContent: justifyContent,
             width: width,
             padding: padding,
-            gap: gap
+            gap: gap,
+            height: height
         }}>
             {children}
         </div>

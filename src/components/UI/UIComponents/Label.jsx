@@ -6,23 +6,25 @@ export default ({
                     textAlign = "start",
                     color = "black",
                     fontWeight = "normal",
-                    fontStyle = "normal"
+                    fontStyle = "normal",
+                    fontSize
                 }) => {
-    let fontSize = "";
 
-    switch (size) {
-        case "medium":
-            fontSize = "3vmin"
-            break;
-        case "small":
-            fontSize = "1vmax"
-            break;
-        case "normal":
-            fontSize = "4vmin"
-            break;
-        case "big":
-            fontSize = "8vmin"
-            break;
+    if (fontSize != null) {
+        switch (size) {
+            case "medium":
+                fontSize = "3vmin"
+                break;
+            case "small":
+                fontSize = "1vmax"
+                break;
+            case "normal":
+                fontSize = "4vmin"
+                break;
+            case "big":
+                fontSize = "8vmin"
+                break;
+        }
     }
     return (
         <div style={{

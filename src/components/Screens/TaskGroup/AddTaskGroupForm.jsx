@@ -8,6 +8,8 @@ import SubmitButton from "../../UI/Form/SubmitButton";
 import Horizontal from "../../UI/Layout/Horizontal";
 import {Bars} from "react-loader-spinner"
 import RadioInput from "../../UI/Form/RadioInput";
+import axios from "axios";
+import Links from "../../../Util/Links";
 
 export default ({afterSubmit}) => {
     const types = [
@@ -21,49 +23,51 @@ export default ({afterSubmit}) => {
     ]
 
     const targets = [
-        "Артикулу",
-        "Бренду",
-        "Магазину"
+        "По артикулу",
+        "По бренду",
+        "По магазину"
     ]
 
     function targetValuesInput(target) {
         switch (target) {
             case targets[0]:
-                return <Textarea label={"Артикулы: "} name={"targetValue"}/>
+                return <Textarea label={"Артикулы: "} name={"target_value"}/>
             case targets[1]:
-                return <TextInput label={"Название бренда:"} name={"targetValue"} width={"50%"}/>
+                return <TextInput label={"Название бренда:"} name={"target_value"} width={"50%"}/>
             case targets[2]:
-                return <TextInput label={"id магазина"} name={"targetValue"} width={"50%"}/>
+                return <TextInput label={"id магазина"} name={"target_value"} width={"50%"}/>
         }
     }
 
     return <>
         <Formik
             initialValues={{
-                type: types[0],
-                target: targets[0],
-                targetValue: "",
+                task_type: types[0],
+                target_type: targets[0],
+                target_value: "",
                 amount: 10,
                 days: 0,
                 hours: 0,
-                minutes: 0,
+                minutes: 1,
                 seconds: 0
             }}
             onSubmit={(values, {setSubmitting}) => {
-                window.setTimeout(() => {
-                    setSubmitting(false)
-                    afterSubmit()
-                }, 3000)
+                axios.post(Links.taskGroup, values)
+                    .then(rs => {
+                        setSubmitting(false)
+                        afterSubmit()
+                        console.log(rs)
+                    })
             }}
             validate={values => {
                 const errors = {}
 
-                if (!values.targetValue) {
-                    errors["targetValue"] = "Обязательное поле"
+                if (!values.target_value) {
+                    errors["target_value"] = "Обязательное поле"
                 }
 
                 if (!values.amount) {
-                    errors["targetValue"] = "Обязательное поле"
+                    errors["target_value"] = "Обязательное поле"
                 }
 
                 if (values.days < 0) {
@@ -91,14 +95,14 @@ export default ({afterSubmit}) => {
                         <br/>
 
                         <Label text={"Задание: "}/>
-                        <RadioInput xs={types} name={"type"}/>
+                        <RadioInput xs={types} name={"task_type"}/>
                         <br/>
 
                         <Label text={"Выбирать товары по: "}/>
-                        <RadioInput xs={targets} name={"target"}/>
+                        <RadioInput xs={targets} name={"target_type"}/>
                         <br/>
 
-                        {targetValuesInput(values["target"])}
+                        {targetValuesInput(values["target_type"])}
 
                         <TextInput label={"Количество: "} name={"amount"} width={"10vmax"}/>
                         <Label text={"Интервал между лайками для каждого артикула:"}/>

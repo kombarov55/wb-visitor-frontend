@@ -1,5 +1,14 @@
 import React from "react"
+import {Bars} from "react-loader-spinner";
 
 export default () => (
-    <i className="pi pi-spin pi-spinner" style={{fontSize: "10vmax"}}></i>
+    <Bars
+        height="30"
+        width="30"
+        radius="9"
+        color='black'
+        ariaLabel='three-dots-loading'
+        wrapperStyle
+        wrapperClass
+    />
 )

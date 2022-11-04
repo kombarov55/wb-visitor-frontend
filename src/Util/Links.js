@@ -1,5 +1,7 @@
-const root = "http://localhost:8666"
+const root = "http://localhost:8000"
 
 export default {
-    getContent: `${root}/content`
+    taskGroup: `${root}/task_group`,
+    taskGroupShort: `${root}/task_group/short`,
+    taskGroupById: id => `${root}/task_group/${id}`
 }
