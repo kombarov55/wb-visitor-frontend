@@ -62,6 +62,7 @@ export default ({id}) => {
                             <Label text={"Задание: " + dto["task_type"]}/>
                             <Label text={"Поиск: " + dto["target_type"]}/>
                             {targetValue()}
+                            <Label text={"Количество артикулов: " + dto["task_count"]}/>
                         </Vertical>
                         <Vertical margin={"1vmax 0"} width={"98%"} alignItems={"flex-start"}>
                             <Label text={`Количество действий на каждый артикул: ${dto["amount"]}`}/>

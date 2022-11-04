@@ -36,7 +36,10 @@ export default ({}) => {
             {
                 !isAddingLikes ?
                     <Button text={"Добавить"} onClick={() => setIsAddingLikes(true)}/> :
-                    <AddTaskGroupForm afterSubmit={() => setIsAddingLikes(false)}/>
+                    <AddTaskGroupForm afterSubmit={() => {
+                        loadTaskGroups()
+                        setIsAddingLikes(false)
+                    }}/>
             }
         </ElevatedVertical>
     </>
