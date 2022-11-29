@@ -6,6 +6,7 @@ import AddTaskGroupForm from "./AddTaskGroupForm";
 import TaskGroupListItem from "../../UI/ListItems/TaskGroupListItem";
 import axios from "axios";
 import Links from "../../../Util/Links";
+import AddTaskForm from "./AddTaskForm";
 
 export default ({}) => {
 
@@ -13,7 +14,7 @@ export default ({}) => {
 
     useEffect(() => loadTaskGroups(), [])
 
-    const [isAddingLikes, setIsAddingLikes] = useState(false)
+    const [isFormVisible, setIsFormVisible] = useState(false)
 
     function loadTaskGroups() {
         axios.get(Links.taskGroupShort).then(rs => {
@@ -34,12 +35,16 @@ export default ({}) => {
                 }
             </ElevatedVertical>
             {
-                !isAddingLikes ?
-                    <Button text={"Добавить"} onClick={() => setIsAddingLikes(true)}/> :
-                    <AddTaskGroupForm afterSubmit={() => {
+                !isFormVisible ?
+                    <Button text={"Добавить"} onClick={() => setIsFormVisible(true)}/> :
+                    <AddTaskForm afterSubmit={() => {
                         loadTaskGroups()
-                        setIsAddingLikes(false)
+                        setIsFormVisible(false)
                     }}/>
+                    // <AddTaskGroupForm afterSubmit={() => {
+                    //     loadTaskGroups()
+                    //     setIsFormVisible(false)
+                    // }}/>
             }
         </ElevatedVertical>
     </>
