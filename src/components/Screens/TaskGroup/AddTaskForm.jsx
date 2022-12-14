@@ -12,12 +12,14 @@ import {
     TextareaAutosize
 } from "@mui/material";
 import {useFormik} from "formik";
+import Links from "../../../Util/Links";
+import axios from "axios";
 
 export default ({afterSubmit}) => {
     const actionTypes = [
-        "Проставить лайки",
-        "Проставить дизлайки",
-        "Просмотр",
+        "Проставить лайк к комменту",
+        "Проставить дизлайк к комменту",
+        // "Просмотр",
         "Добавить в корзину",
         "Добавить и убрать из корзины",
         "Добавить в корзину и заказать",
@@ -37,14 +39,19 @@ export default ({afterSubmit}) => {
             article_select_value: "",
             action_type: null,
             params: {},
-            amount: 0,
-            interval_days: null,
-            interval_hours: null,
-            interval_minutes: null,
-            interval_seconds: null
+            amount: 1,
+            interval_days: 0,
+            interval_hours: 0,
+            interval_minutes: 1,
+            interval_seconds: 0
         },
         onSubmit: values => {
-            alert(JSON.stringify(values, null, 2))
+            if (values.action_type === "Проставить лайк к комменту" || values.action_type === "Проставить дизлайк к комменту") {
+                values.article_select_type = articleSelectTypes[0]
+            }
+
+            // alert(JSON.stringify(values, null, 2))
+            axios.post(Links.taskRequest, values).then(rs => afterSubmit())
         }
     })
 
@@ -86,6 +93,11 @@ export default ({afterSubmit}) => {
 
     function setLikeParamsForm() {
         return <>
+            <FormLabel>Артикул</FormLabel>
+            <Input name={"article_select_value"}
+                   value={formik.values.article_select_value}
+                   onChange={formik.handleChange}/>
+
             <FormLabel>Имя комментатора (скопировать из комментария)</FormLabel>
             <Input name={"params.name"}
                    value={formik.values.params.name}
@@ -117,14 +129,23 @@ export default ({afterSubmit}) => {
         </>
     }
 
+    function viewForm() {
+        return <>
+            <FormLabel>Сколько просмотров для каждого артикула</FormLabel>
+            <Input name={"amount"}
+                   value={formik.values.amount}
+                   onChange={formik.handleChange}/>
+        </>
+    }
+
     function paramsInput() {
         switch (formik.values.action_type) {
-            case "Проставить лайки":
+            case "Проставить лайк к комменту":
                 return setLikeParamsForm()
-            case "Проставить дизлайки":
+            case "Проставить дизлайк к комменту":
                 return setLikeParamsForm()
             case "Просмотр":
-                return <></>
+                return viewForm()
             case "Задать вопрос":
                 return addQuestionParamsForm()
             case "Задать вопрос со сравнением":
@@ -138,24 +159,8 @@ export default ({afterSubmit}) => {
 
     return <form onSubmit={formik.handleSubmit}>
         <ElevatedVertical width={"60%"} margin={"0"}>
-            <Label size={"medium"} text={"Добавить задания"} fontWeight={"bold"}/>
+            <Label size={"medium"} text={"Новое задание"} fontWeight={"bold"}/>
             <br/>
-
-
-            <FormControl>
-                <Label size={"medium"} text={"Из чего выбирать артикулы:"} fontWeight={"bold"}/>
-                <RadioGroup
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    defaultValue="female"
-                    name="article_select_type"
-                >
-                    {articleSelectTypes.map(v =>
-                        <FormControlLabel value={v} onChange={formik.handleChange} control={<Radio/>} label={v}/>
-                    )}
-                </RadioGroup>
-            </FormControl>
-
-            {selectValueInput(formik.values.article_select_type)}
 
             <FormControl>
                 <FormLabel>Действие</FormLabel>
@@ -169,30 +174,54 @@ export default ({afterSubmit}) => {
                     )}
                 </RadioGroup>
             </FormControl>
+            {(formik.values.action_type != null && formik.values.action_type != "Проставить лайк к комменту" && formik.values.action_type != "Проставить дизлайк к комменту") &&
+                <>
+                    <FormControl>
+                        <Label size={"medium"} text={"Из чего выбирать артикулы:"} fontWeight={"bold"}/>
+                        <RadioGroup
+                            aria-labelledby="demo-radio-buttons-group-label"
+                            defaultValue="female"
+                            name="article_select_type"
+                        >
+                            {articleSelectTypes.map(v =>
+                                <FormControlLabel value={v} onChange={formik.handleChange} control={<Radio/>}
+                                                  label={v}/>
+                            )}
+                        </RadioGroup>
+                    </FormControl>
+                    {selectValueInput(formik.values.article_select_type)}
+                </>
+            }
+
 
             {paramsInput()}
 
-            <FormLabel>Интервал между действиями для каждого артикула:</FormLabel>
+            {formik.values.action_type &&
+                <>
+                    <FormLabel>Интервал между действиями для каждого артикула:</FormLabel>
 
-            <FormLabel>Дней:</FormLabel>
-            <Input name={"interval_days"}
-                   value={formik.values.interval_days}
-                   onChange={formik.handleChange}/>
+                    <FormLabel>Дней:</FormLabel>
+                    <Input name={"interval_days"}
+                           value={formik.values.interval_days}
+                           onChange={formik.handleChange}/>
 
-            <FormLabel>Часов:</FormLabel>
-            <Input name={"interval_hours"}
-                   value={formik.values.interval_hours}
-                   onChange={formik.handleChange}/>
+                    <FormLabel>Часов:</FormLabel>
+                    <Input name={"interval_hours"}
+                           value={formik.values.interval_hours}
+                           onChange={formik.handleChange}/>
 
-            <FormLabel>Минут:</FormLabel>
-            <Input name={"interval_minutes"}
-                   value={formik.values.interval_minutes}
-                   onChange={formik.handleChange}/>
+                    <FormLabel>Минут:</FormLabel>
+                    <Input name={"interval_minutes"}
+                           value={formik.values.interval_minutes}
+                           onChange={formik.handleChange}/>
 
-            <FormLabel>Секунд:</FormLabel>
-            <Input name={"interval_seconds"}
-                   value={formik.values.interval_seconds}
-                   onChange={formik.handleChange}/>
+                    <FormLabel>Секунд:</FormLabel>
+                    <Input name={"interval_seconds"}
+                           value={formik.values.interval_seconds}
+                           onChange={formik.handleChange}/>
+                </>
+            }
+
 
             <Button color="primary" variant="contained" type="submit">
                 Сохранить
