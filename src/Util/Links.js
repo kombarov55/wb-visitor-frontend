@@ -7,5 +7,6 @@ export default {
     requestPhone: `${root}/request_phone`,
     proxy: `${root}/proxy`,
     getProxy: (limit, offset) => `${root}/proxy?limit=${limit}&offset=${offset}`,
-    availableNumbers: `${root}/available_numbers`
+    availableNumbers: `${root}/available_numbers`,
+    tasks: id => `${root}/task_request/tasks?id=${id}`
 }

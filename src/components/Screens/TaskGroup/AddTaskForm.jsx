@@ -9,7 +9,7 @@ import {
     Input,
     Radio,
     RadioGroup,
-    TextareaAutosize
+    TextareaAutosize, Typography
 } from "@mui/material";
 import {useFormik} from "formik";
 import Links from "../../../Util/Links";
@@ -17,12 +17,13 @@ import axios from "axios";
 
 export default ({availableNumbersAmount, afterSubmit}) => {
     const actionTypes = [
-        "Проставить лайк к комменту",
-        "Проставить дизлайк к комменту",
+        "Проставить лайки к комменту",
+        "Проставить дизлайки к комменту",
         // "Просмотр",
         "Добавить в корзину",
         "Добавить и убрать из корзины",
-        "Добавить в корзину и заказать",
+        "Добавить в избранное",
+        "Добавить и убрать из избранного",
         "Задать вопрос",
         "Задать вопрос со сравнением"
     ]
@@ -46,7 +47,7 @@ export default ({availableNumbersAmount, afterSubmit}) => {
             interval_seconds: 0
         },
         onSubmit: values => {
-            if (values.action_type === "Проставить лайк к комменту" || values.action_type === "Проставить дизлайк к комменту") {
+            if (values.action_type === "Проставить лайки к комменту" || values.action_type === "Проставить дизлайки к комменту") {
                 values.article_select_type = articleSelectTypes[0]
             }
 
@@ -75,14 +76,14 @@ export default ({availableNumbersAmount, afterSubmit}) => {
                 </>
             case "Найти по магазину":
                 return <>
-                    <FormLabel>ID магазина</FormLabel>
+                    <FormLabel>ID магазина (Будут выбраны артикулы с 1ой страницы товаров магазина)</FormLabel>
                     <Input name={"article_select_value"}
                            value={formik.values.article_select_value}
                            onChange={formik.handleChange}/>
                 </>
             case "Найти по поисковому запросу":
                 return <>
-                    <FormLabel>Что ввести в поисковую строку</FormLabel>
+                    <FormLabel>Что ввести в поисковую строку (Будут выбраны артикулы с 1ой страницы поискового запроса)</FormLabel>
                     <Input name={"article_select_value"}
                            value={formik.values.article_select_value}
                            onChange={formik.handleChange}/>
@@ -129,23 +130,80 @@ export default ({availableNumbersAmount, afterSubmit}) => {
         </>
     }
 
-    function viewForm() {
+    function addToCartForm() {
+        return <></>
+    }
+
+    function addToCartAndRemoveForm() {
         return <>
-            <FormLabel>Сколько просмотров для каждого артикула</FormLabel>
-            <Input name={"amount"}
-                   value={formik.values.amount}
+            <FormLabel>Через сколько убрать:</FormLabel>
+            <FormLabel>Дней:</FormLabel>
+            <Input name={"params.remove_interval_days"}
+                   value={formik.values.params.remove_interval_days}
+                   onChange={formik.handleChange}/>
+
+            <FormLabel>Часов:</FormLabel>
+            <Input name={"params.remove_interval_hours"}
+                   value={formik.values.params.remove_interval_hours}
+                   onChange={formik.handleChange}/>
+
+            <FormLabel>Минут:</FormLabel>
+            <Input name={"params.remove_interval_minutes"}
+                   value={formik.values.params.remove_interval_minutes}
+                   onChange={formik.handleChange}/>
+
+            <FormLabel>Секунд:</FormLabel>
+            <Input name={"params.remove_interval_seconds"}
+                   value={formik.values.params.remove_interval_seconds}
+                   onChange={formik.handleChange}/>
+        </>
+    }
+
+    function addToFavoritesForm() {
+        return <>
+
+        </>
+    }
+
+    function addToFavoritesAndRemoveForm() {
+        return <>
+            <FormLabel>Через сколько убрать:</FormLabel>
+            <FormLabel>Дней:</FormLabel>
+            <Input name={"params.remove_interval_days"}
+                   value={formik.values.params.remove_interval_days}
+                   onChange={formik.handleChange}/>
+
+            <FormLabel>Часов:</FormLabel>
+            <Input name={"params.remove_interval_hours"}
+                   value={formik.values.params.remove_interval_hours}
+                   onChange={formik.handleChange}/>
+
+            <FormLabel>Минут:</FormLabel>
+            <Input name={"params.remove_interval_minutes"}
+                   value={formik.values.params.remove_interval_minutes}
+                   onChange={formik.handleChange}/>
+
+            <FormLabel>Секунд:</FormLabel>
+            <Input name={"params.remove_interval_seconds"}
+                   value={formik.values.params.remove_interval_seconds}
                    onChange={formik.handleChange}/>
         </>
     }
 
     function paramsInput() {
         switch (formik.values.action_type) {
-            case "Проставить лайк к комменту":
+            case "Проставить лайки к комменту":
                 return setLikeParamsForm()
-            case "Проставить дизлайк к комменту":
+            case "Проставить дизлайки к комменту":
                 return setLikeParamsForm()
-            case "Просмотр":
-                return viewForm()
+            case "Добавить в корзину":
+                return addToCartForm()
+            case "Добавить и убрать из корзины":
+                return addToCartAndRemoveForm()
+            case "Добавить в избранное":
+                return addToFavoritesForm()
+            case "Добавить и убрать из избранного":
+                return addToFavoritesAndRemoveForm()
             case "Задать вопрос":
                 return addQuestionParamsForm()
             case "Задать вопрос со сравнением":
@@ -174,7 +232,7 @@ export default ({availableNumbersAmount, afterSubmit}) => {
                     )}
                 </RadioGroup>
             </FormControl>
-            {(formik.values.action_type != null && formik.values.action_type != "Проставить лайк к комменту" && formik.values.action_type != "Проставить дизлайк к комменту") &&
+            {(formik.values.action_type != null && formik.values.action_type != "Проставить лайки к комменту" && formik.values.action_type != "Проставить дизлайки к комменту") &&
                 <>
                     <FormControl>
                         <Label size={"medium"} text={"Из чего выбирать артикулы:"} fontWeight={"bold"}/>

@@ -1,18 +1,33 @@
 import React, {useEffect, useState} from "react"
-import ElevatedVertical from "../../UI/Layout/ElevatedVertical";
 import Label from "../../UI/UIComponents/Label";
 import axios from "axios";
 import Links from "../../../Util/Links";
 import AddTaskForm from "./AddTaskForm";
 import FormatDate from "../../../Util/FormatDate";
 
-import {Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {
+    Button, CircularProgress,
+    Dialog,
+    DialogTitle,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
+} from "@mui/material";
 
 
 export default ({}) => {
 
     const [data, setData] = useState([])
     const [availableNumbersAmount, setAvailableNumbersAmount] = useState(0)
+
+    const [isOpenDialog, setIsOpenDialog] = useState(false)
+
+    const [tasks, setTasks] = useState([])
+    const [isLoadingTasks, setIsLoadingTasks] = useState(false)
 
     useEffect(() => {
         load()
@@ -44,10 +59,34 @@ export default ({}) => {
         return result.join(" ")
     }
 
+    function openDialogAndLoadTasks(id) {
+        setIsOpenDialog(true)
+        setIsLoadingTasks(true)
+        axios.get(Links.tasks(id)).then(rs => {
+            setIsLoadingTasks(false)
+            setTasks(rs.data)
+        })
+    }
+
+    function taskStatus(s) {
+        switch (s) {
+            case "SCHEDULED":
+                return "Запланировано"
+            case "RUNNING":
+                return "Выполняется"
+            case "NO_AVAILABLE_NUMBERS":
+                return "Нет доступных номеров для выполнения"
+            case "SUCCESS":
+                return "Выполнено"
+            case "FAILED":
+                return "Ошибка во время выполнения"
+        }
+    }
+
     return <>
         <Paper sx={{width: "80%", p: 2}}>
             <Label text={"Активные задания"} size={"medium"}/>
-            <TableContainer component={Paper} >
+            <TableContainer component={Paper}>
                 <Table sx={{}}>
                     <TableHead>
                         <TableRow>
@@ -70,6 +109,7 @@ export default ({}) => {
                         {data.map((v) => (
                             <TableRow key={v.id}
                                       sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                      onClick={() => openDialogAndLoadTasks(v.id)}
                             >
                                 <TableCell component="th" scope="row">{v.id}</TableCell>
                                 <TableCell align="right">{v.action_type}</TableCell>
@@ -97,11 +137,58 @@ export default ({}) => {
                         load()
                         setIsFormVisible(false)
                     }}/>
-                    // <AddTaskGroupForm afterSubmit={() => {
-                    //     loadTaskGroups()
-                    //     setIsFormVisible(false)
-                    // }}/>
+                // <AddTaskGroupForm afterSubmit={() => {
+                //     loadTaskGroups()
+                //     setIsFormVisible(false)
+                // }}/>
             }
         </Paper>
+
+        <Dialog open={isOpenDialog} onClose={() => setIsOpenDialog(false)} maxWidth={"80vw"}>
+            {!isLoadingTasks ?
+                <>
+                    <DialogTitle>Планирование</DialogTitle>
+                    <TableContainer component={Paper}>
+                        <Table sx={{}}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>id</TableCell>
+                                    <TableCell align={"right"}>Артикул</TableCell>
+                                    <TableCell align={"right"}>Действие</TableCell>
+                                    <TableCell align={"right"}>Использован номер</TableCell>
+                                    <TableCell align={"right"}>Запланированная дата выполнения</TableCell>
+                                    <TableCell align={"right"}>Дата выполнения</TableCell>
+                                    <TableCell align={"right"}>Статус</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {tasks.map(v =>
+                                    <TableRow key={v.id}
+                                              sx={{'&:last-child td, &:last-child th': {border: 0}}}>
+                                        <TableCell component="th" scope="row">{v.id}</TableCell>
+                                        <TableCell align="right">
+                                            <a href={`https://www.wildberries.ru/catalog/${v.article}/detail.aspx?targetUrl=MI`}>
+                                                {v.article}
+                                            </a>
+
+                                        </TableCell>
+                                        <TableCell align="right">{v.action_type}</TableCell>
+                                        <TableCell align="right">{v.number_used}</TableCell>
+                                        <TableCell align="right">{v.scheduled_datetime}</TableCell>
+                                        <TableCell align="right">{v.end_datetime}</TableCell>
+                                        <TableCell align="right">{taskStatus(v.status)}</TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </> :
+                <>
+                    <DialogTitle>
+                        <CircularProgress/>
+                    </DialogTitle>
+                </>
+            }
+        </Dialog>
     </>
 }
