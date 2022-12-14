@@ -15,7 +15,7 @@ import {useFormik} from "formik";
 import Links from "../../../Util/Links";
 import axios from "axios";
 
-export default ({afterSubmit}) => {
+export default ({availableNumbersAmount, afterSubmit}) => {
     const actionTypes = [
         "Проставить лайк к комменту",
         "Проставить дизлайк к комменту",
@@ -106,7 +106,7 @@ export default ({afterSubmit}) => {
             <Input name={"params.date"}
                    value={formik.values.params.date}
                    onChange={formik.handleChange}/>
-            <FormLabel>Сколько лайков (не должно превышать количество номеров)</FormLabel>
+            <FormLabel>Сколько лайков - не должно превышать количество номеров ({availableNumbersAmount})</FormLabel>
             <Input name={"amount"}
                    value={formik.values.amount}
                    onChange={formik.handleChange}/>
@@ -122,7 +122,7 @@ export default ({afterSubmit}) => {
                 value={formik.values.text_list}
                 onChange={formik.handleChange}
             />
-            <FormLabel>Сколько комментариев (не должно превышать количество номеров)</FormLabel>
+            <FormLabel>Сколько комментариев - не должно превышать количество номеров ({availableNumbersAmount})</FormLabel>
             <Input name={"amount"}
                    value={formik.values.amount}
                    onChange={formik.handleChange}/>

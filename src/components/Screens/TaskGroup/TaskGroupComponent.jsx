@@ -12,15 +12,18 @@ import {Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, T
 export default ({}) => {
 
     const [data, setData] = useState([])
+    const [availableNumbersAmount, setAvailableNumbersAmount] = useState(0)
 
-    useEffect(() => loadTaskGroups(), [])
+    useEffect(() => {
+        load()
+        setInterval(() => load(), 5000)
+    }, [])
 
     const [isFormVisible, setIsFormVisible] = useState(false)
 
-    function loadTaskGroups() {
-        axios.get(Links.taskRequest).then(rs => {
-            setData(rs.data)
-        })
+    function load() {
+        axios.get(Links.taskRequest).then(rs => setData(rs.data))
+        axios.get(Links.availableNumbers).then(rs => setAvailableNumbersAmount(rs.data.amount))
     }
 
     function interval(v) {
@@ -57,8 +60,9 @@ export default ({}) => {
                             <TableCell align={"right"}>Интервал</TableCell>
                             <TableCell align={"right"}>Дата начала</TableCell>
                             <TableCell align={"right"}>Всего заданий</TableCell>
+                            <TableCell align={"right"}>Выполнено</TableCell>
                             <TableCell align={"right"}>Запущены сейчас</TableCell>
-                            <TableCell align={"right"}>Запланированы</TableCell>
+                            <TableCell align={"right"}>Осталось</TableCell>
                             <TableCell align={"right"}>Выполнено с ошибкой</TableCell>
                         </TableRow>
                     </TableHead>
@@ -76,6 +80,7 @@ export default ({}) => {
                                 <TableCell align="right">{interval(v)}</TableCell>
                                 <TableCell align="right">{FormatDate(new Date(v.received_datetime))}</TableCell>
                                 <TableCell align="right">{v.total_cnt}</TableCell>
+                                <TableCell align="right">{v.success_cnt}</TableCell>
                                 <TableCell align="right">{v.running_cnt}</TableCell>
                                 <TableCell align="right">{v.scheduled_cnt}</TableCell>
                                 <TableCell align="right">{v.no_available_numbers_cnt}</TableCell>
@@ -88,8 +93,8 @@ export default ({}) => {
             {
                 !isFormVisible ?
                     <Button variant={"contained"} onClick={() => setIsFormVisible(true)}>Добавить</Button> :
-                    <AddTaskForm afterSubmit={() => {
-                        loadTaskGroups()
+                    <AddTaskForm availableNumbersAmount={availableNumbersAmount} afterSubmit={() => {
+                        load()
                         setIsFormVisible(false)
                     }}/>
                     // <AddTaskGroupForm afterSubmit={() => {
