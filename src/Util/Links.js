@@ -1,4 +1,5 @@
-const root = "http://localhost:5000"
+// const root = "http://localhost:5000"
+const root = "http://65.108.88.175:5000"
 
 export default {
     taskRequest: `${root}/task_request`,
@@ -8,5 +9,6 @@ export default {
     proxy: `${root}/proxy`,
     getProxy: (limit, offset) => `${root}/proxy?limit=${limit}&offset=${offset}`,
     availableNumbers: `${root}/available_numbers`,
-    tasks: id => `${root}/task_request/tasks?id=${id}`
+    tasks: id => `${root}/task_request/tasks?id=${id}`,
+    deleteProxy: id => `${root}/proxy?id=${id}`
 }
