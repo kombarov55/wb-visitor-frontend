@@ -27,6 +27,9 @@ export default ({}) => {
 
     const [dialogVisible, setDialogVisible] = useState(false)
 
+    const [confirmDialogVisible, setConfirmDialogVisible] = useState(false)
+    const [proxyId, setProxyId] = useState(null)
+
     const [showSnackbar, setShowSnackbar] = useState(false)
     const [snackbarText, setSnackbarText] = useState("")
 
@@ -126,6 +129,20 @@ export default ({}) => {
                     </Button>
                 </ListItem>
             </form>
+        </Dialog>
+        <Dialog open={dialogVisible} onClose={() => setDialogVisible(false)}>
+            <DialogTitle>Вы действительно хотите удалить прокси?</DialogTitle>
+            <ListItem>
+                <Button type={"submit"} variant={"contained"} onClick={() => {
+                    axios.delete(Links.deleteProxy(proxyId))
+                        .then(() => {
+                            setConfirmDialogVisible(false)
+                            snackbar("Прокси удалён")
+                        })
+                }}>
+                    Удалить
+                </Button>
+            </ListItem>
         </Dialog>
         <Snackbar open={showSnackbar}
                   message={snackbarText}

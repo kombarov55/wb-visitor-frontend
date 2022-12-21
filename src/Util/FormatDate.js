@@ -1,4 +1,7 @@
 export default function (date) {
+    if (date.getMilliseconds() === 0) {
+        return ""
+    }
     return getDateStr(date) + " " + getTimeStr(date)
 }
 

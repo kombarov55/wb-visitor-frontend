@@ -256,7 +256,7 @@ export default ({availableNumbersAmount, afterSubmit}) => {
 
             {formik.values.action_type &&
                 <>
-                    <FormLabel>Интервал между действиями для каждого артикула:</FormLabel>
+                    <FormLabel>Интервал между действиями:</FormLabel>
 
                     <FormLabel>Дней:</FormLabel>
                     <Input name={"interval_days"}

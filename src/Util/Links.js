@@ -2,6 +2,8 @@
 const root = "http://65.108.88.175:5000"
 
 export default {
+    articlesByShopId: id => `${root}/articles/by_shop?shop_id=${id}`,
+    articlesBySearchQuery: q => `${root}/articles/by_search_query?q=${q}`,
     taskRequest: `${root}/task_request`,
     phones: `${root}/phones`,
     phones_data: `${root}/phones_data`,

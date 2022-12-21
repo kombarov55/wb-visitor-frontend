@@ -22,10 +22,13 @@ import {
 } from "@mui/material";
 import {useFormik} from "formik";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import FormatDate from "../../../Util/FormatDate";
 
 export default ({}) => {
     const [data, setData] = useState([])
+    const [phonesData, setPhonesData] = useState({})
     const [balance, setBalance] = useState(0)
+    const [activatedCount, setActivatedCount] = useState(0)
 
     const [dialogVisible, setDialogVisible] = useState(false)
 
@@ -48,7 +51,9 @@ export default ({}) => {
 
     function load() {
         axios.get(Links.phones).then(rs => setData(rs.data))
-        axios.get(Links.phones_data).then(rs => setBalance(rs.data.balance))
+        axios.get(Links.phones_data).then(rs => {
+            setPhonesData(rs.data)
+        })
     }
 
     useEffect(() => {
@@ -87,7 +92,16 @@ export default ({}) => {
                 <Paper sx={{p: 2}}>
                     <Stack spacing={2}>
                         <Typography gutterBottom variant="h6" component="div">
-                            Баланс: {balance}Р
+                            Баланс: {phonesData.balance}Р
+                        </Typography>
+                        <Typography gutterBottom variant="h6" component="div">
+                            Активных номеров: {phonesData.activated_count}
+                        </Typography>
+                        <Typography gutterBottom variant="h6" component="div">
+                            В очереди на активацию: {phonesData.just_received_count}
+                        </Typography>
+                        <Typography gutterBottom variant="h6" component="div">
+                            Активируются: {phonesData.activating_count}
                         </Typography>
                     </Stack>
                 </Paper>
@@ -99,6 +113,8 @@ export default ({}) => {
                                 <TableCell align={"right"}>id sms-activate</TableCell>
                                 <TableCell align={"right"}>Номер</TableCell>
                                 <TableCell align={"right"}>Статус</TableCell>
+                                <TableCell align={"right"}>Дата смены статуса</TableCell>
+                                <TableCell align={"right"}>Дата создания номера</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -111,6 +127,8 @@ export default ({}) => {
                                     <TableCell align="right">{v.ext_id}</TableCell>
                                     <TableCell align="right">{v.number}</TableCell>
                                     <TableCell align="right">{statusToRu(v.status)}</TableCell>
+                                    <TableCell align="right">{FormatDate(new Date(v.status_change_datetime))}</TableCell>
+                                    <TableCell align="right">{FormatDate(new Date(v.received_datetime))}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
