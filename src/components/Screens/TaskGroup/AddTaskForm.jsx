@@ -103,8 +103,8 @@ export default ({availableNumbersAmount, afterSubmit}) => {
             <Input name={"params.name"}
                    value={formik.values.params.name}
                    onChange={formik.handleChange}/>
-            <FormLabel>Дата комментария (скопировать из комментария)</FormLabel>
-            <Input name={"params.date"}
+            <FormLabel>Текст (скопировать)</FormLabel>
+            <Input name={"params.text"}
                    value={formik.values.params.date}
                    onChange={formik.handleChange}/>
             <FormLabel>Сколько лайков - не должно превышать количество номеров ({availableNumbersAmount})</FormLabel>
