@@ -13,13 +13,13 @@ import Links from "../../../Util/Links";
 
 export default ({afterSubmit}) => {
     const types = [
-        "Проставить лайки",
+        "Пожаловаться на отзыв",
         "Просмотр",
         "Добавить в корзину",
         "Добавить и убрать из корзины",
         "Добавить в корзину и заказать",
-        "Комментарий",
-        "Комментарий с сравнением"
+        "Задать вопрос",
+        "Задать вопрос со сравнением с другим товаром."
     ]
 
     const targets = [
@@ -105,7 +105,7 @@ export default ({afterSubmit}) => {
                         {targetValuesInput(values["target_type"])}
 
                         <TextInput label={"Количество: "} name={"amount"} width={"10vmax"}/>
-                        <Label text={"Интервал между лайками для каждого артикула:"}/>
+                        <Label text={"Интервал между жалобами:"}/>
                         <Horizontal width={"80%"} justifyContent={"flex-start"}>
                             <TextInput label={"Дней: "} name={"days"}/>
                             <TextInput label={"Часов: "} name={"hours"}/>

@@ -17,9 +17,7 @@ import axios from "axios";
 
 export default ({availableNumbersAmount, afterSubmit}) => {
     const actionTypes = [
-        "Проставить лайки к комменту",
-        "Проставить дизлайки к комменту",
-        // "Просмотр",
+        "Пожаловаться на отзыв",
         "Добавить в корзину",
         "Добавить и убрать из корзины",
         "Добавить в избранное",
@@ -43,15 +41,14 @@ export default ({availableNumbersAmount, afterSubmit}) => {
             amount: 1,
             interval_days: 0,
             interval_hours: 0,
-            interval_minutes: 1,
-            interval_seconds: 0
+            interval_minutes: 0,
+            interval_seconds: 10
         },
         onSubmit: values => {
-            if (values.action_type === "Проставить лайки к комменту" || values.action_type === "Проставить дизлайки к комменту") {
+            if (values.action_type === "Пожаловаться на отзыв") {
                 values.article_select_type = articleSelectTypes[0]
             }
 
-            // alert(JSON.stringify(values, null, 2))
             axios.post(Links.taskRequest, values).then(rs => afterSubmit())
         }
     })
@@ -92,22 +89,17 @@ export default ({availableNumbersAmount, afterSubmit}) => {
         }
     }
 
-    function setLikeParamsForm() {
+    function addReportParamsForm() {
         return <>
             <FormLabel>Артикул</FormLabel>
             <Input name={"article_select_value"}
                    value={formik.values.article_select_value}
                    onChange={formik.handleChange}/>
-
-            <FormLabel>Имя комментатора (скопировать из комментария)</FormLabel>
-            <Input name={"params.name"}
-                   value={formik.values.params.name}
-                   onChange={formik.handleChange}/>
             <FormLabel>Текст (скопировать)</FormLabel>
             <Input name={"params.text"}
                    value={formik.values.params.date}
                    onChange={formik.handleChange}/>
-            <FormLabel>Сколько лайков - не должно превышать количество номеров ({availableNumbersAmount})</FormLabel>
+            <FormLabel>Количество жалоб (кол-во номеров: {availableNumbersAmount})</FormLabel>
             <Input name={"amount"}
                    value={formik.values.amount}
                    onChange={formik.handleChange}/>
@@ -192,10 +184,8 @@ export default ({availableNumbersAmount, afterSubmit}) => {
 
     function paramsInput() {
         switch (formik.values.action_type) {
-            case "Проставить лайки к комменту":
-                return setLikeParamsForm()
-            case "Проставить дизлайки к комменту":
-                return setLikeParamsForm()
+            case "Пожаловаться на отзыв":
+                return addReportParamsForm()
             case "Добавить в корзину":
                 return addToCartForm()
             case "Добавить и убрать из корзины":
@@ -232,7 +222,7 @@ export default ({availableNumbersAmount, afterSubmit}) => {
                     )}
                 </RadioGroup>
             </FormControl>
-            {(formik.values.action_type != null && formik.values.action_type != "Проставить лайки к комменту" && formik.values.action_type != "Проставить дизлайки к комменту") &&
+            {formik.values.action_type != "Пожаловаться на отзыв" &&
                 <>
                     <FormControl>
                         <Label size={"medium"} text={"Из чего выбирать артикулы:"} fontWeight={"bold"}/>

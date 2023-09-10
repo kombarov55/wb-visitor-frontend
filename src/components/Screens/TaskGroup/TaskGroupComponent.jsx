@@ -4,6 +4,7 @@ import axios from "axios";
 import Links from "../../../Util/Links";
 import AddTaskForm from "./AddTaskForm";
 import FormatDate from "../../../Util/FormatDate";
+import TaskRequest from "../../../Stubs/TaskRequest"
 
 import {
     Button, CircularProgress,
@@ -18,6 +19,8 @@ import {
     TableRow
 } from "@mui/material";
 
+import  Pagination from "@mui/material/Pagination";
+
 
 export default ({}) => {
 
@@ -28,6 +31,8 @@ export default ({}) => {
 
     const [tasks, setTasks] = useState([])
     const [isLoadingTasks, setIsLoadingTasks] = useState(false)
+
+    const [page, setPage] = useState(1)
 
     useEffect(() => {
         load()
@@ -83,6 +88,25 @@ export default ({}) => {
         }
     }
 
+    function describeTaskGroup(v) {
+        var result = ""
+
+        const articles = v.article_select_value.size > 3
+              ? "[" + v.article_select_value.slice(0, 3).join(", ") + "...]"
+              : "[" + v.article_select_value + "]"
+
+        result += v.action_type + ` к артикул(ам) ${articles}`
+
+        return result
+    }
+
+    function countTaskGroupProgress(v) {
+        const total = v.total_cnt
+        const executedCount = total - v.scheduled_cnt
+        
+        return `${executedCount}/${total}`
+    }
+
     return <>
         <Paper sx={{width: "80%", p: 2}}>
             <Label text={"Активные задания"} size={"medium"}/>
@@ -91,43 +115,23 @@ export default ({}) => {
                     <TableHead>
                         <TableRow>
                             <TableCell>id</TableCell>
-                            <TableCell align={"right"}>Действие</TableCell>
-                            <TableCell align={"right"}>Количество (для каждого артикула)</TableCell>
-                            <TableCell align={"right"}>Тип выбора артикула</TableCell>
-                            <TableCell align={"right"}>Поиск по:</TableCell>
-                            {/*<TableCell align={"right"}>Статус</TableCell>*/}
-                            <TableCell align={"right"}>Интервал</TableCell>
-                            <TableCell align={"right"}>Дата начала</TableCell>
-                            <TableCell align={"right"}>Всего заданий</TableCell>
-                            <TableCell align={"right"}>Выполнено</TableCell>
-                            <TableCell align={"right"}>Запущены сейчас</TableCell>
-                            <TableCell align={"right"}>Осталось</TableCell>
-                            <TableCell align={"right"}>Выполнено с ошибкой</TableCell>
+                            <TableCell align={"left"}>Действие</TableCell>
+                            <TableCell align={"right"}>Прогресс</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.map((v) => (
+                      { data.slice((page - 1) * 10, ((page - 1) * 10) + 10).map((v) => (
                             <TableRow key={v.id}
                                       sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                                      onClick={() => openDialogAndLoadTasks(v.id)}
-                            >
+                                      onClick={() => openDialogAndLoadTasks(v.id)}>
                                 <TableCell component="th" scope="row">{v.id}</TableCell>
-                                <TableCell align="right">{v.action_type}</TableCell>
-                                <TableCell align="right">{v.amount}</TableCell>
-                                <TableCell align="right">{v.article_select_type}</TableCell>
-                                <TableCell align="right">{v.article_select_value}</TableCell>
-                                {/*<TableCell align="right">{statusToRu(v.status)}</TableCell>*/}
-                                <TableCell align="right">{interval(v)}</TableCell>
-                                <TableCell align="right">{FormatDate(new Date(v.received_datetime))}</TableCell>
-                                <TableCell align="right">{v.total_cnt}</TableCell>
-                                <TableCell align="right">{v.success_cnt}</TableCell>
-                                <TableCell align="right">{v.running_cnt}</TableCell>
-                                <TableCell align="right">{v.scheduled_cnt}</TableCell>
-                                <TableCell align="right">{v.no_available_numbers_cnt}</TableCell>
+                              <TableCell align="left">{describeTaskGroup(v)}</TableCell>
+                              <TableCell align="right">{countTaskGroupProgress(v)}</TableCell>
                             </TableRow>
-                        ))}
+                        )) }
                     </TableBody>
                 </Table>
+              <Pagination count={Math.floor(data.length / 10) + 1} onChange={ (event, value) => { setPage(value) } }/>
             </TableContainer>
             <br/>
             {
