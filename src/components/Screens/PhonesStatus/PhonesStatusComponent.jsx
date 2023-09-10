@@ -109,7 +109,6 @@ export default ({}) => {
                     <Table sx={{width: 650}} size={"small"}>
                         <TableHead>
                             <TableRow>
-                                <TableCell>id</TableCell>
                                 <TableCell align={"right"}>id sms-activate</TableCell>
                                 <TableCell align={"right"}>Номер</TableCell>
                                 <TableCell align={"right"}>Статус</TableCell>
@@ -123,8 +122,7 @@ export default ({}) => {
                                     key={v.id}
                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                 >
-                                    <TableCell component="th" scope="row">{v.id}</TableCell>
-                                    <TableCell align="right">{v.ext_id}</TableCell>
+                                    <TableCell component="th" align="right">{v.ext_id}</TableCell>
                                     <TableCell align="right">{v.number}</TableCell>
                                     <TableCell align="right">{statusToRu(v.status)}</TableCell>
                                     <TableCell align="right">{FormatDate(new Date(v.status_change_datetime))}</TableCell>

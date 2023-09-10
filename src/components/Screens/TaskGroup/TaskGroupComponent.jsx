@@ -25,6 +25,7 @@ import  Pagination from "@mui/material/Pagination";
 export default ({}) => {
 
     const [data, setData] = useState([])
+    const [selectedTask, setSelectedTask] = useState({})
     const [availableNumbersAmount, setAvailableNumbersAmount] = useState(0)
 
     const [isOpenDialog, setIsOpenDialog] = useState(false)
@@ -64,10 +65,11 @@ export default ({}) => {
         return result.join(" ")
     }
 
-    function openDialogAndLoadTasks(id) {
+    function openDialogAndLoadTasks(task) {
         setIsOpenDialog(true)
         setIsLoadingTasks(true)
-        axios.get(Links.tasks(id)).then(rs => {
+        setSelectedTask(task)
+        axios.get(Links.tasks(task.id)).then(rs => {
             setIsLoadingTasks(false)
             setTasks(rs.data)
         })
@@ -89,6 +91,8 @@ export default ({}) => {
     }
 
     function describeTaskGroup(v) {
+        if (Object.keys(v).length == 0) return ""
+
         var result = ""
 
         const articles = v.article_select_value.size > 3
@@ -114,7 +118,6 @@ export default ({}) => {
                 <Table sx={{}}>
                     <TableHead>
                         <TableRow>
-                            <TableCell>id</TableCell>
                             <TableCell align={"left"}>Действие</TableCell>
                             <TableCell align={"right"}>Прогресс</TableCell>
                         </TableRow>
@@ -123,8 +126,7 @@ export default ({}) => {
                       { data.slice((page - 1) * 10, ((page - 1) * 10) + 10).map((v) => (
                             <TableRow key={v.id}
                                       sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                                      onClick={() => openDialogAndLoadTasks(v.id)}>
-                                <TableCell component="th" scope="row">{v.id}</TableCell>
+                                      onClick={() => openDialogAndLoadTasks(v)}>
                               <TableCell align="left">{describeTaskGroup(v)}</TableCell>
                               <TableCell align="right">{countTaskGroupProgress(v)}</TableCell>
                             </TableRow>
@@ -151,7 +153,22 @@ export default ({}) => {
         <Dialog open={isOpenDialog} onClose={() => setIsOpenDialog(false)} maxWidth={"80vw"}>
             {!isLoadingTasks ?
                 <>
-                    <DialogTitle>Планирование</DialogTitle>
+                  <DialogTitle>{ describeTaskGroup(selectedTask) }</DialogTitle>
+                  <Paper>
+                    <ul>
+                      <li>Артикул(ы): <b> {selectedTask.article_select_value} </b> </li>
+                      <li>Статус: <b> {selectedTask.status} </b></li>
+                      <li>Начало работы: <b> {selectedTask.received_datetime} </b> </li>
+                      { selectedTask.end_datetime && <li>Рассчетное время окончания: <b> {selectedTask.end_datetime} </b> </li> }
+                      <li>Количество действий для каждого артикула: <b> {selectedTask.amount} </b> </li>
+                      <li>Интервал между действиями: <b> {selectedTask.interval_days} </b> дней <b> {selectedTask.interval_hours} </b> часов <b> {selectedTask.interval_minutes} </b> минут <b> {selectedTask.seconds} </b> секунд</li>
+                      <li>Всего действий: <b> {selectedTask.total_cnt} </b> </li>
+                      <li>Успешно выполнено: <b> {selectedTask.success_cnt} </b> </li>
+                      <li>Запущенно в данный момент: <b> {selectedTask.running_cnt} </b> </li>
+                      <li>Запланированы: <b> {selectedTask.scheduled_cnt} </b> </li>
+                      <li>Выполнено с ошибкой: <b> {selectedTask.no_available_numbers_cnt} </b> </li>
+                    </ul>
+                  </Paper>
                     <TableContainer component={Paper}>
                         <Table sx={{}}>
                             <TableHead>

@@ -1,5 +1,5 @@
-// const root = "http://localhost:5000"
-const root = "http://65.108.88.175:5000"
+const root = "http://localhost:5000"
+//const root = "http://65.108.88.175:5000"
 
 export default {
     articlesByShopId: id => `${root}/articles/by_shop?shop_id=${id}`,
