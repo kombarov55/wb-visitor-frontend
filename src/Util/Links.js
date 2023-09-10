@@ -12,5 +12,6 @@ export default {
     getProxy: (limit, offset) => `${root}/proxy?limit=${limit}&offset=${offset}`,
     availableNumbers: `${root}/available_numbers`,
     tasks: id => `${root}/task_request/tasks?id=${id}`,
-    deleteProxy: id => `${root}/proxy?id=${id}`
+    deleteProxy: id => `${root}/proxy?id=${id}`,
+    taskLogs: taskId => `${root}/static/${taskId}.log`
 }

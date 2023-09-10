@@ -111,6 +111,14 @@ export default ({}) => {
         return `${executedCount}/${total}`
     }
 
+    function taskStatus(task) {
+        console.log(JSON.stringify(task))
+        if (task.status == "FAILED" || task.status == "NO_AVAILABLE_NUMBERS") {
+            return task.status + ` (${task.error_msg})`
+        }
+        return task.status
+    }
+
     return <>
         <Paper sx={{width: "80%", p: 2}}>
             <Label text={"Активные задания"} size={"medium"}/>
@@ -180,6 +188,7 @@ export default ({}) => {
                                     <TableCell align={"right"}>Запланированная дата выполнения</TableCell>
                                     <TableCell align={"right"}>Дата выполнения</TableCell>
                                     <TableCell align={"right"}>Статус</TableCell>
+                                    <TableCell align={"right"}>Логи</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -197,7 +206,8 @@ export default ({}) => {
                                         <TableCell align="right">{v.number_used}</TableCell>
                                         <TableCell align="right">{v.scheduled_datetime}</TableCell>
                                         <TableCell align="right">{v.end_datetime}</TableCell>
-                                        <TableCell align="right">{taskStatus(v.status)}</TableCell>
+                                        <TableCell align="right">{taskStatus(v)}</TableCell>
+                                      <TableCell align="right"><a href={`${Links.taskLogs(v.id)}`}>{v.id}.log</a></TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>
