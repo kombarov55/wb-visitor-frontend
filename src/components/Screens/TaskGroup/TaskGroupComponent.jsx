@@ -3,8 +3,7 @@ import Label from "../../UI/UIComponents/Label";
 import axios from "axios";
 import Links from "../../../Util/Links";
 import AddTaskForm from "./AddTaskForm";
-import FormatDate from "../../../Util/FormatDate";
-import TaskRequest from "../../../Stubs/TaskRequest"
+
 
 import {
     Button, CircularProgress,
@@ -75,21 +74,6 @@ export default ({}) => {
         })
     }
 
-    function taskStatus(s) {
-        switch (s) {
-            case "SCHEDULED":
-                return "Запланировано"
-            case "RUNNING":
-                return "Выполняется"
-            case "NO_AVAILABLE_NUMBERS":
-                return "Нет доступных номеров для выполнения"
-            case "SUCCESS":
-                return "Выполнено"
-            case "FAILED":
-                return "Ошибка во время выполнения"
-        }
-    }
-
     function describeTaskGroup(v) {
         if (Object.keys(v).length == 0) return ""
 
@@ -138,14 +122,6 @@ export default ({}) => {
         }
     }
 
-    function articleLink(article) {
-        return (
-            <a href={`https://www.wildberries.ru/catalog/${article}/detail.aspx?targetUrl=MI`}>
-              {article}
-            </a>
-        )
-    }
-
     return <>
         <Paper sx={{width: "80%", p: 2}}>
             <Label text={"Активные задания"} size={"medium"}/>
@@ -172,7 +148,7 @@ export default ({}) => {
                         )) }
                     </TableBody>
                 </Table>
-              <Pagination count={Math.floor(data.length / 10) + 1} onChange={ (event, value) => { setPage(value) } }/>
+              <Pagination count={Math.floor(data.length / 10) + 1} onChange={ (_, value) => { setPage(value) } }/>
             </TableContainer>
             <br/>
             {
@@ -196,7 +172,7 @@ export default ({}) => {
                   <Paper>
                     <ul>
                       <li>Артикул(ы): <b> {selectedTask.article_select_value} </b> </li>
-                      <li>Статус: <b> {selectedTask.status} </b></li>
+                      <li>Статус: <b> {taskGroupStatus(selectedTask)} </b></li>
                       <li>Начало работы: <b> {selectedTask.received_datetime} </b> </li>
                       { selectedTask.end_datetime && <li>Рассчетное время окончания: <b> {selectedTask.end_datetime} </b> </li> }
                       <li>Количество действий для каждого артикула: <b> {selectedTask.amount} </b> </li>
