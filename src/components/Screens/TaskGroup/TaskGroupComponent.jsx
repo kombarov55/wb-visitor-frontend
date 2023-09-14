@@ -95,11 +95,18 @@ export default ({}) => {
 
         var result = ""
 
-        const articles = v.article_select_value.size > 3
-              ? "[" + v.article_select_value.slice(0, 3).join(", ") + "...]"
-              : "[" + v.article_select_value + "]"
+        var articlesString = ""
+        const articlesList = v.article_select_value.split("\n")
 
-        result += v.action_type + ` к артикул(ам) ${articles}`
+        if (articlesList.length == 1) {
+            articlesString = articlesList[0]
+        } else if (articlesList.length <= 3) {
+            articlesString = "["  + articlesList.join(", ") + "]"
+        } else {
+            articlesString = "["  + articlesList.join(", ") + "...]"
+        }
+
+        result += v.action_type + ` к артикул(ам) ${articlesString}`
 
         return result
     }
@@ -112,11 +119,31 @@ export default ({}) => {
     }
 
     function taskStatus(task) {
-        console.log(JSON.stringify(task))
         if (task.status == "FAILED" || task.status == "NO_AVAILABLE_NUMBERS") {
             return task.status + ` (${task.error_msg})`
         }
         return task.status
+    }
+
+    function taskGroupStatus(taskGroup) {
+        switch (taskGroup.status) {
+        case "STARTED":
+            return "Выполняется"
+        case "SUCCESS":
+            return "Выполнено"
+        case "NOT_STARTED":
+            return "Подготавливается"
+        default:
+            return taskGroup.status
+        }
+    }
+
+    function articleLink(article) {
+        return (
+            <a href={`https://www.wildberries.ru/catalog/${article}/detail.aspx?targetUrl=MI`}>
+              {article}
+            </a>
+        )
     }
 
     return <>
@@ -126,8 +153,10 @@ export default ({}) => {
                 <Table sx={{}}>
                     <TableHead>
                         <TableRow>
-                            <TableCell align={"left"}>Действие</TableCell>
-                            <TableCell align={"right"}>Прогресс</TableCell>
+                          <TableCell align={"left"}>Действие</TableCell>
+                          <TableCell align={"left"}>Дата начала</TableCell>
+                          <TableCell align={"right"}>Прогресс</TableCell>
+                          <TableCell align={"right"}>Статус</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -136,7 +165,9 @@ export default ({}) => {
                                       sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                       onClick={() => openDialogAndLoadTasks(v)}>
                               <TableCell align="left">{describeTaskGroup(v)}</TableCell>
-                              <TableCell align="right">{countTaskGroupProgress(v)}</TableCell>
+                              <TableCell align="left">{v.received_datetime}</TableCell>
+                              <TableCell align="left">{countTaskGroupProgress(v)}</TableCell>
+                              <TableCell align="left">{taskGroupStatus(v)}</TableCell>
                             </TableRow>
                         )) }
                     </TableBody>
